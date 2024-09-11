@@ -2,42 +2,29 @@
 <html>
 
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/petinweb/">
-
+  <base href="$FLUTTER_BASE_HREF">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
-
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="petin">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <title>petin</title>
+  <title>Pet In</title>
   <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
   <script>
-    const serviceWorkerVersion = "1028187183";
+    // Variable para almacenar la variable de entorno recibida
+    var envVariable = "unknown";
+    // Bandera para evitar cargar el script principal más de una vez
     var scriptLoaded = false;
+    // Variable para la versión del service worker
+    var serviceWorkerVersion = null;
+
+    // Función para cargar el script principal de Dart
     function loadMainDartJs() {
       if (scriptLoaded) {
         return;
@@ -48,60 +35,82 @@
       scriptTag.type = 'application/javascript';
       document.body.append(scriptTag);
     }
-
-    if ('serviceWorker' in navigator) {
-      // Service workers are supported. Use them.
-      window.addEventListener('load', function () {
-        // Register Firebase Messaging service worker.
-        navigator.serviceWorker.register('firebase-messaging-sw.js');
-
-        // Wait for registration to finish before dropping the <script> tag.
-        // Otherwise, the browser will load the script multiple times,
-        // potentially different versions.
+    // Función para registrar los service workers
+    function registerServiceWorkers() {
+      if ('serviceWorker' in navigator) {
+        console.log('Estás en el ambiente: ', envVariable);
+        // Determina el archivo de service worker a registrar según la variable de entorno
+        var serviceWorkerFile = envVariable === "Production" ? 'firebase-messaging-prod.js' : 'firebase-messaging-dev.js';
+        if (envVariable !== "unknown") {
+          navigator.serviceWorker.register(serviceWorkerFile)
+            .then((reg) => {
+              console.log('Service worker registrado: ', serviceWorkerFile);
+            })
+            .catch((error) => {
+              console.error('Error registrando service worker: ', error);
+            });
+        }
+        // URL del service worker de Flutter con versión
         var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
         navigator.serviceWorker.register(serviceWorkerUrl)
           .then((reg) => {
+            // Función para esperar a que el service worker se active
             function waitForActivation(serviceWorker) {
               serviceWorker.addEventListener('statechange', () => {
                 if (serviceWorker.state == 'activated') {
-                  console.log('Installed new service worker.');
+                  console.log('Nuevo service worker instalado.');
                   loadMainDartJs();
                 }
               });
             }
+            // Verifica el estado del service worker y actúa en consecuencia
             if (!reg.active && (reg.installing || reg.waiting)) {
-              // No active web worker and we have installed or are installing
-              // one for the first time. Simply wait for it to activate.
               waitForActivation(reg.installing || reg.waiting);
             } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
-              // When the app updates the serviceWorkerVersion changes, so we
-              // need to ask the service worker to update.
-              console.log('New service worker available.');
+              console.log('Nuevo service worker disponible.');
               reg.update();
               waitForActivation(reg.installing);
             } else {
-              // Existing service worker is still good.
-              console.log('Loading app from service worker.');
+              console.log('Cargando la app desde el service worker.');
               loadMainDartJs();
             }
+          })
+          .catch((error) => {
+            console.error('Error registrando el service worker de Flutter: ', error);
+            loadMainDartJs();
           });
-        // If service worker doesn't succeed in a reasonable amount of time,
-        // fallback to plaint <script> tag.
+
+        // Si el script principal no se carga en 4 segundos, intenta cargarlo directamente
         setTimeout(() => {
           if (!scriptLoaded) {
-            console.warn(
-              'Failed to load app from service worker. Falling back to plain <script> tag.',
-            );
+            console.warn('No se pudo cargar la app desde el service worker. Cargando directamente con <script> tag.');
             loadMainDartJs();
           }
         }, 4000);
-      });
-    } else {
-      // Service workers not supported. Just drop the <script> tag.
-      loadMainDartJs();
+      } else {
+        // Si el navegador no soporta service workers, carga el script principal directamente
+        loadMainDartJs();
+      }
     }
+    // Escucha mensajes enviados al window
+    window.addEventListener('message', (event) => {
+      if (event.origin !== self.location.origin) {
+        return;
+      }
+      // Asigna el valor recibido a la variable de entorno
+      envVariable = event.data;
+      console.log('Variable de entorno recibida body: ', envVariable);
+      // Registra los service workers después de recibir la variable de entorno
+      registerServiceWorkers();
+    });
+    // Carga la aplicación Flutter al cargar la página
+    window.addEventListener('load', function () {
+      console.log('Cargando la aplicación Flutter...');
+      loadMainDartJs();
+    });
   </script>
   <script>
+    // Función para mostrar notificaciones
     function showNotification(title, message) {
       if (!("Notification" in window)) {
         console.log("Este navegador no admite notificaciones de escritorio");
