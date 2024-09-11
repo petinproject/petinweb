@@ -21,7 +21,7 @@ env:
 jobs:
   variables_secrets:
     name: Variables and Secrets
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Web Api Key Secret
