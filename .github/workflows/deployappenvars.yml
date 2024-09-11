@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Generate .env/stg.json
         run: |
@@ -36,7 +36,8 @@ jobs:
       - name: Copy compiled web app
         run: |
           mkdir -p build/web
-          cp -r * build/web
+          cp -r .env build/web/.env
+          cp -r $(ls -A | grep -v build) build/web
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
