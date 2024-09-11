@@ -24,8 +24,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Web Api Key Secret
         run: echo ${{ secrets.FIREBASE_WEB_API_KEY }}
+
       - name: Ambiente
         run: echo "$ENV"
+
+      - name: List Environment Variables
+        run: env
+
       - name: Fin
+        run: echo "Fin del proceso"
