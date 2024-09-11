@@ -27,7 +27,7 @@ jobs:
       - name: Web Api Key Secret
       - run: echo ${{ secrets.FIREBASE_WEB_API_KEY }}
       - name: Ambiente
-      - run: echo ${{ vars.ENV }}
+      - run: echo "$ENV"
       - name: Fin
       - run: echo "Fin del job variables-secrets"
       
