@@ -1,11 +1,11 @@
 {
-    "name": "petin",
-    "short_name": "petin",
+    "name": "Pet In PrepVet",
+    "short_name": "Pet In",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Medicina prepagada veterinaria.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
