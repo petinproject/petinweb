@@ -11,5 +11,7 @@
     "GOOGLE_PLACES_API_KEY": "AIzaSyC_wBmA-Sy9HzxJ2LSLFG7hlLcSzoXn7qE",
     "PAYU_PAYMENT_URL": "https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/",
     "PAYMENT_REPONSE_PAGE": "https://dev-petin-backend.onrender.com/api/pagos/respuestapayu",
-    "PAYMENT_CONFIRMATION_PAGE": "https://dev-petin-backend.onrender.com/api/pagos/confirmacionpayu"
+    "PAYMENT_CONFIRMATION_PAGE": "https://dev-petin-backend.onrender.com/api/pagos/confirmacionpayu",
+    "PAYMENT_METHODS":"PSE,BANK_REFERENCED,VISA",
+    "PETIN_MAIL": "info@pet-in.co"
 }
