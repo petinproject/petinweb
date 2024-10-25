@@ -13,16 +13,25 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
   <title>Pet In</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.min.js";
+    pdfRenderOptions = {
+      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/cmaps/',
+      cMapPacked: true,
+    }
+  </script>
   <script>
     // Variable para almacenar la variable de entorno recibida
     var envVariable = "unknown";
     // Bandera para evitar cargar el script principal más de una vez
     var scriptLoaded = false;
     // Variable para la versión del service worker
-    const serviceWorkerVersion = "608413486";
+    const serviceWorkerVersion = "96590303";
 
     // Función para cargar el script principal de Dart
     function loadMainDartJs() {
